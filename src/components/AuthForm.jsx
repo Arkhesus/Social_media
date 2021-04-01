@@ -1,7 +1,7 @@
 import { useState, Fragment } from "react";
 import { Card, Menu, Form, Button } from "semantic-ui-react";
 import './css/Authform.css';
-import { auth } from "../firebase";
+import { db, auth } from "../firebase";
 import MenuApp from "../page/MenuApp";
 import Header from './Header';
 //importer CSS peut encore se faire ici :) 
@@ -17,9 +17,26 @@ async function authenticateUser(email, password) {
 }
 
 async function createUser(email, password) {
+
     try {
         await auth.createUserWithEmailAndPassword(email, password);
         console.log("Created");
+
+        db.collection("users").doc(email).set({
+            name: "BG_2000",
+        })
+        .then(() => {
+
+            db.collection("posts").doc("BG_2000").collection("posts").doc().set({
+            })
+
+            console.log("Document successfully written!");
+        })
+        .catch((error) => {
+            console.error("Error writing document: ", error);
+        });
+
+
     } catch (err) {
         console.log(err);
     }
@@ -47,7 +64,8 @@ function AuthForm() {
     return (
         <div className="page">
             {
-                user ? <MenuApp />
+                user ? 
+                <MenuApp mail={user.email} />
                     : (
                         <Fragment>
                             <Header />

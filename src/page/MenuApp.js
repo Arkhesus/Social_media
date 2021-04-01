@@ -3,7 +3,9 @@ import CardPost from "../components/Card"
 import Header from "../components/Header"
 
 
-function MenuApp() {
+function MenuApp(mail="") {
+
+    
 
     return (
         <div>
@@ -11,7 +13,7 @@ function MenuApp() {
                 {/* <h1>Logged in !!! :) :) :)</h1> */}
                 {/* <AiIcons.AiOutlinePoweroff onClick={ () => auth.signOut()}/> */}
 
-                <CardPost/>
+                <CardPost mail_user={mail}/>
         </div>
     )
 }
