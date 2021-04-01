@@ -16,18 +16,18 @@ async function authenticateUser(email, password) {
     }
 }
 
-async function createUser(email, password) {
+async function createUser(email, password, username) {
 
     try {
         await auth.createUserWithEmailAndPassword(email, password);
         console.log("Created");
 
         db.collection("users").doc(email).set({
-            name: "BG_2000",
+            name: username,
         })
         .then(() => {
 
-            db.collection("posts").doc("BG_2000").collection("posts").doc().set({
+            db.collection("posts").doc(username).collection("posts").doc().set({
             })
 
             console.log("Document successfully written!");
@@ -55,6 +55,8 @@ function AuthForm() {
 
     const [signupEmail, setSignupEmail] = useState("");
     const [signupPassword, setSignupPassword] = useState("");
+
+    const [username, setUsername] = useState("");
 
     const [user, setUser] = useState("");
 
@@ -154,9 +156,22 @@ function AuthForm() {
                                                         ></input><br />
                                                     </div>
                                                 </Form.Field>
+                                                <Form.Field>
+                                                    <div className="position">
+                                                        <label className="text">Name</label><br />
+                                                        <input
+                                                            placeholder="Username"
+                                                            name="username"
+                                                            type="test"
+                                                            className="fields"
+                                                            value={username || ""}
+                                                            onChange={(e) => setUsername(e.target.value)}
+                                                        ></input><br />
+                                                    </div>
+                                                </Form.Field>
                                                 <Button
                                                     className="button"
-                                                    onClick={() => createUser(signupEmail, signupPassword, true)}
+                                                    onClick={() => createUser(signupEmail, signupPassword,username, true)}
                                                 >
                                                     Sign up
                             </Button>
