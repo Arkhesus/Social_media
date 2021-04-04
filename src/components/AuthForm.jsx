@@ -23,10 +23,11 @@ async function createUser(email, password, username) {
         console.log("Created");
 
         db.collection("users").doc(email).set({
-            name: username,
+            name: username.charAt(0).toUpperCase() + username.slice(1).toLowerCase(),
+            letter: username[0].toUpperCase()
         })
         .then(() => {
-
+            console.log(username[0])
             db.collection("posts").doc(username).collection("posts").doc().set({
             })
 

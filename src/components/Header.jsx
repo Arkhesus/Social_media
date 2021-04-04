@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {auth} from "../firebase";
+import {auth,db} from "../firebase";
 
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -18,6 +18,41 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+
+const search = (props) => 
+  {
+    let searchKey= props;
+    let firstLetter = searchKey
+    
+
+    if(firstLetter.length <= 1){
+      firstLetter = firstLetter.toUpperCase();
+      console.log(firstLetter);
+      db.collection('users').where('letter', '==', firstLetter)
+      .get()
+      .then(data => {
+        data.forEach(childData => {
+          // sampleArr.push(childData.payload.doc.data())
+          console.log(childData.id, '=>', childData.data())
+        })
+      })
+    }else{
+      const name = firstLetter.charAt(0).toUpperCase() + firstLetter.slice(1).toLowerCase();
+      console.log("Nom complet", name.length, name)
+      db.collection('users').where('name', ">=", name).where('name', '<=', name+ '\uf8ff')
+      .get()
+      .then(data => {
+        data.forEach(childData => {
+          // sampleArr.push(childData.payload.doc.data())
+          console.log(childData.id, '=>', childData.data())
+
+
+        })
+      })
+    }
+
+
+};
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -94,6 +129,7 @@ const Header = (props) => {
                     root: classes.inputRoot,
                     input: classes.inputInput,
                     }}
+                    onChange={(e) => (search(e.target.value))}
                     inputProps={{ 'aria-label': 'search' }}
                 />
             </div>
