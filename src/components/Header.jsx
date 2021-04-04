@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {auth,db} from "../firebase";
-
+import { useState } from "react";
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -19,8 +19,11 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 
-const search = (props) => 
+const Search = (props, name) => 
   {
+
+
+
     let searchKey= props;
     let firstLetter = searchKey
     
@@ -34,10 +37,13 @@ const search = (props) =>
         data.forEach(childData => {
           // sampleArr.push(childData.payload.doc.data())
           console.log(childData.id, '=>', childData.data())
+          name = childData.data().name
+
+          return name
         })
       })
     }else{
-      const name = firstLetter.charAt(0).toUpperCase() + firstLetter.slice(1).toLowerCase();
+      let name = firstLetter.charAt(0).toUpperCase() + firstLetter.slice(1).toLowerCase();
       console.log("Nom complet", name.length, name)
       db.collection('users').where('name', ">=", name).where('name', '<=', name+ '\uf8ff')
       .get()
@@ -45,8 +51,9 @@ const search = (props) =>
         data.forEach(childData => {
           // sampleArr.push(childData.payload.doc.data())
           console.log(childData.id, '=>', childData.data())
+          name = childData.data().name
 
-
+          return name
         })
       })
     }
@@ -114,6 +121,7 @@ const Header = (props) => {
   const [state, setState] = React.useState({
       "drawer":false,
   })
+  const [name, setName] = useState('');
   
   var logout = null
   if (props.logout === true){
@@ -129,9 +137,11 @@ const Header = (props) => {
                     root: classes.inputRoot,
                     input: classes.inputInput,
                     }}
-                    onChange={(e) => (search(e.target.value))}
+                    onChange={(e) => (setName(Search(e.target.value, name)))}
                     inputProps={{ 'aria-label': 'search' }}
                 />
+
+                
             </div>
                 <Button color="inherit" onClick={() => auth.signOut()}>Logout</Button>
         </div>
@@ -164,6 +174,8 @@ const Header = (props) => {
           
         </Toolbar>
       </AppBar>
+
+      <div id="test"></div>
     </div>
   );
 }
