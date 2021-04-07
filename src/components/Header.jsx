@@ -18,25 +18,29 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+import Popover from '@material-ui/core/Popover';
 
 const Search = (props) => 
   {
 
     let searchText= props;
     let name = searchText.charAt(0).toUpperCase() + searchText.slice(1).toLowerCase();
-    console.log("Nom complet", name.length, name)
-
-    db.collection('users').where('name', ">=", name).where('name', '<=', name+ '\uf8ff')
-    .get()
-    .then(data => {
-      data.forEach(childData => {
-        // sampleArr.push(childData.payload.doc.data())
-        console.log(childData.id, '=>', childData.data())
-        name = childData.data().name
-
-        return name
+    // console.log("Nom complet", name.length, name)
+    return new Promise((resolve, reject) =>{
+      db.collection('users').where('name', ">=", name).where('name', '<=', name+ '\uf8ff')
+      .get()
+      .then(data => {
+        const resp = []
+        data.forEach(childData => {
+          // sampleArr.push(childData.payload.doc.data())
+          // console.log(childData.id, '=>', childData.data())
+          name = childData.data().name
+          resp.push(name)
+        })
+        resolve(resp)
       })
     })
+    
 
 
 };
@@ -93,15 +97,32 @@ const useStyles = makeStyles((theme) => ({
   },
   drawer:{
     width: 250
-  }
+  }, 
+  liste: {
+    minWidth:250,
+  },
 }));
 
 const Header = (props) => {
   const classes = useStyles();
   const [state, setState] = React.useState({
       "drawer":false,
+      "names": [],
   })
-  const [name, setName] = useState('');
+  // const [names, setNames] = useState({
+
+  // });
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
   
   var logout = null
   if (props.logout === true){
@@ -111,15 +132,46 @@ const Header = (props) => {
                 <div className={classes.searchIcon}>
                     <SearchIcon />
                 </div>
+                
                 <InputBase
                     placeholder="Search user…"
                     classes={{
                     root: classes.inputRoot,
                     input: classes.inputInput,
                     }}
-                    onChange={(e) => (setName(Search(e.target.value, name)))}
+                    
+                    onKeyPress={async(e) => {
+                      
+                      if (e.key === 'Enter'){
+                        Search(e.target.value).then((names) => setState({names:names}))
+                        setAnchorEl(e.currentTarget)
+                      }
+                    }}
                     inputProps={{ 'aria-label': 'search' }}
                 />
+                <Popover
+                  open={open}
+                  anchorEl={anchorEl}
+                  onClose={handleClose}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                  }}
+                >
+                  <List className={classes.liste}>
+                    {state.names.map((i) => {
+                      return (<ListItem onClick={() => console.log("clicked")}>
+                        <p>{i}</p>
+                      </ListItem>)
+                    })}
+
+                  </List>
+
+                </Popover>
 
                 
             </div>
