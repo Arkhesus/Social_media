@@ -19,44 +19,24 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 
-const Search = (props, name) => 
+const Search = (props) => 
   {
 
+    let searchText= props;
+    let name = searchText.charAt(0).toUpperCase() + searchText.slice(1).toLowerCase();
+    console.log("Nom complet", name.length, name)
 
+    db.collection('users').where('name', ">=", name).where('name', '<=', name+ '\uf8ff')
+    .get()
+    .then(data => {
+      data.forEach(childData => {
+        // sampleArr.push(childData.payload.doc.data())
+        console.log(childData.id, '=>', childData.data())
+        name = childData.data().name
 
-    let searchKey= props;
-    let firstLetter = searchKey
-    
-
-    if(firstLetter.length <= 1){
-      firstLetter = firstLetter.toUpperCase();
-      console.log(firstLetter);
-      db.collection('users').where('letter', '==', firstLetter)
-      .get()
-      .then(data => {
-        data.forEach(childData => {
-          // sampleArr.push(childData.payload.doc.data())
-          console.log(childData.id, '=>', childData.data())
-          name = childData.data().name
-
-          return name
-        })
+        return name
       })
-    }else{
-      let name = firstLetter.charAt(0).toUpperCase() + firstLetter.slice(1).toLowerCase();
-      console.log("Nom complet", name.length, name)
-      db.collection('users').where('name', ">=", name).where('name', '<=', name+ '\uf8ff')
-      .get()
-      .then(data => {
-        data.forEach(childData => {
-          // sampleArr.push(childData.payload.doc.data())
-          console.log(childData.id, '=>', childData.data())
-          name = childData.data().name
-
-          return name
-        })
-      })
-    }
+    })
 
 
 };
