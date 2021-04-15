@@ -46,7 +46,7 @@ async function createUser(email, password, username) {
 
 
 
-function AuthForm() {
+function AuthForm(props) {
 
     //declaration de variable et constante
     const [isLogin, setIsLogin] = useState(true);
@@ -61,7 +61,17 @@ function AuthForm() {
 
     const [user, setUser] = useState("");
 
-    auth.onAuthStateChanged((user) => setUser(user));
+    auth.onAuthStateChanged((user) => {
+        setUser(user)
+        if (user) {
+            props.setLogged(true)
+        }
+        else{
+            props.setLogged(false)
+        }
+    });
+    
+    console.log(user)
 
     //On retourne l'affichage qu'on veut
     return (
@@ -71,7 +81,7 @@ function AuthForm() {
                 <MenuApp mail={user.email} />
                     : (
                         <Fragment>
-                            <Header />
+                            {/* <Header /> */}
                             <Card
                                 className="card"
                                 style={{ marginTop: "30vh", margin: "auto" }}>
@@ -122,8 +132,12 @@ function AuthForm() {
                                                 </Form.Field>
                                                 <Button
                                                     className="button"
-                                                    onClick={() => authenticateUser(loginEmail, loginPassword)}
-                                                >
+                                                    onClick={() => {
+                                                        authenticateUser(loginEmail, loginPassword).then(()=>{
+                                                          props.setLogged(true)  
+                                                        })
+                                                    }
+                                                    }>
                                                     Login
                                 </Button>
                                             </Form>
@@ -172,8 +186,12 @@ function AuthForm() {
                                                 </Form.Field>
                                                 <Button
                                                     className="button"
-                                                    onClick={() => createUser(signupEmail, signupPassword,username, true)}
-                                                >
+                                                    onClick={() => {
+                                                        createUser(signupEmail, signupPassword,username, true).then(()=>{
+                                                            props.setLogged(true)  
+                                                          })
+                                                    }
+                                                    }>
                                                     Sign up
                             </Button>
                                             </Form>

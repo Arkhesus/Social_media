@@ -19,6 +19,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import Popover from '@material-ui/core/Popover';
+import {
+  Link,
+} from "react-router-dom";
 
 const Search = (props) => 
   {
@@ -164,8 +167,8 @@ const Header = (props) => {
                 >
                   <List className={classes.liste}>
                     {state.names.map((i) => {
-                      return (<ListItem onClick={() => console.log("clicked")}>
-                        <p>{i}</p>
+                      return (<ListItem>
+                        <Link to={'/'+i}>{i}</Link>
                       </ListItem>)
                     })}
 
@@ -175,7 +178,11 @@ const Header = (props) => {
 
                 
             </div>
-                <Button color="inherit" onClick={() => auth.signOut()}>Logout</Button>
+                <Button color="inherit" onClick={() => {
+                    auth.signOut().then(()=>{
+                      props.setLogged(false)  
+                    })
+                  }}>Logout</Button>
         </div>
   }
 

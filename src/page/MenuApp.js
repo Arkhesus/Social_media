@@ -9,7 +9,7 @@ function MenuApp(mail="") {
 
     return (
         <div>
-            <Header logout={true}/>
+            {/* <Header logout={true}/> */}
                 {/* <h1>Logged in !!! :) :) :)</h1> */}
                 {/* <AiIcons.AiOutlinePoweroff onClick={ () => auth.signOut()}/> */}
 
