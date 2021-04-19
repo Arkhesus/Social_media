@@ -1,5 +1,4 @@
 import React from 'react';
-import { useState } from "react";
 import { Card } from "semantic-ui-react";
 import {auth, db} from "../firebase";
 
@@ -7,41 +6,46 @@ export default class CardPost extends React.Component {
 
     state = {
         posts : null,
-        user: null
+        user: null,
+        mail : null
     };
 
     constructor(props){
-        super(props);
+        super(props);                
+    }
 
-        console.log(props.mail_user.mail);
+    componentDidMount(){
+        this.setState({ "mail" : this.props.mail_user.mail})
+        this.getPost(this.props.mail_user.mail);
+    }
 
-        db.collection("users").doc(props.mail_user.mail)
+   componentDidUpdate(){
+       if(this.state.mail != this.props.mail_user.mail){
+        this.setState({ "mail" : this.props.mail_user.mail})
+        this.getPost(this.props.mail_user.mail)        
+        
+       }
+    }
+
+    getPost(mail){
+        db.collection("users").doc(mail)
             .get()
             .then((doc => {
                 if(doc.exists){
-
-                    this.setState({user : doc.data().name})
+                    this.setState({"user" : doc.data().name})
                     db.collection("posts").doc(doc.data().name).collection("posts")
                     .get()
                     .then(querysnapshot => {
                         const posts = []
                         querysnapshot.docs.forEach(doc => {
-                            console.log(doc.data())
                             const data = doc.data()
                             posts.push(data)
                         })
-                        this.setState({posts : posts})
+                        this.setState({"posts" : posts})
                     })
                     .catch(error => console.log(error))  
                 }
-
-
-
             }))
-
-
-
-                
     }
 
 
@@ -73,5 +77,6 @@ export default class CardPost extends React.Component {
         </div>
     );
 }
+
 
 }
