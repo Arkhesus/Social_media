@@ -20,6 +20,7 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import Popover from '@material-ui/core/Popover';
 import {
+  useHistory,
   Link,
 } from "react-router-dom";
 
@@ -125,6 +126,13 @@ const Header = (props) => {
     setAnchorEl(null);
   };
 
+  const history = useHistory();
+
+  const routeChange = () =>{ 
+    let path = `/`; 
+    history.push(path);
+  }
+
   const open = Boolean(anchorEl);
   
   var logout = null
@@ -205,7 +213,7 @@ const Header = (props) => {
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
             <MenuIcon onClick={() => setState({...state, ["drawer"]: true})}/>
           </IconButton>
-          <Typography variant="h6" className={classes.title}>
+          <Typography variant="h6" className={classes.title} onClick={routeChange}>
             Social Media
           </Typography>
 
