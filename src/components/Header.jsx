@@ -129,7 +129,7 @@ const Header = (props) => {
   const history = useHistory();
 
   const routeChange = () =>{ 
-    let path = `/`; 
+    let path = `/`;
     history.push(path);
   }
 
