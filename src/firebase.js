@@ -7,10 +7,24 @@ const firebaseConfig = {
     storageBucket: "socialmedia-35079.appspot.com",
     messagingSenderId: "810220143430",
     appId: "1:810220143430:web:11929f4409f779730b1b47",
-    measurementId: "G-9PG92KL3ZC"
+    measurementId: "G-9PG92KL3ZC",
   }
 
 firebase.initializeApp(firebaseConfig);
 
+async function getUser(){
+  var email = getMail()
+  var doc = await firebase.firestore().collection("users").doc(email).get()
+  return doc.data().name
+}
+
+function getMail(){
+  return firebase.auth().currentUser.email
+}
+
+
 export const auth = firebase.auth();
 export const db = firebase.firestore();
+export const storage = firebase.storage();
+export const getUserName = getUser;
+export const getUserMail = getMail;

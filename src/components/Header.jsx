@@ -1,6 +1,7 @@
 import React from 'react';
 
 import {auth,db} from "../firebase";
+import CreatePost from "./CreatePost";
 import { useState } from "react";
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -18,6 +19,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+import AddIcon from '@material-ui/icons/Add';
 import Popover from '@material-ui/core/Popover';
 import {
   useHistory,
@@ -44,9 +46,6 @@ const Search = (props) =>
         resolve(resp)
       })
     })
-    
-
-
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -100,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   drawer:{
-    width: 250
+    width: 500
   }, 
   liste: {
     minWidth:250,
@@ -199,19 +198,12 @@ const Header = (props) => {
       <AppBar position="static">
         <Drawer anchor="left" open={state["drawer"]} onClose={() => setState({...state, ["drawer"]: false})}>
             <div className={classes.drawer}>
-                <List>
-                    {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                    <ListItem button key={text}>
-                        <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                        <ListItemText primary={text} />
-                    </ListItem>
-                    ))}
-                </List>
+                <CreatePost></CreatePost>
             </div>
         </Drawer>
         <Toolbar>
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            <MenuIcon onClick={() => setState({...state, ["drawer"]: true})}/>
+            <AddIcon onClick={() => setState({...state, ["drawer"]: true})}/>
           </IconButton>
           <Typography variant="h6" className={classes.title} onClick={routeChange}>
             Social Media
