@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {auth,db} from "../firebase";
+import {auth,db, getUserMail} from "../firebase";
 import CreatePost from "./CreatePost";
 import { useState } from "react";
 import { fade, makeStyles } from '@material-ui/core/styles';
@@ -117,6 +117,10 @@ const Header = (props) => {
   // });
   const [anchorEl, setAnchorEl] = React.useState(null);
 
+  const closeDrawer = () => {
+    setState({...state, ["drawer"]: false})
+  }
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -198,7 +202,7 @@ const Header = (props) => {
       <AppBar position="static">
         <Drawer anchor="left" open={state["drawer"]} onClose={() => setState({...state, ["drawer"]: false})}>
             <div className={classes.drawer}>
-                <CreatePost></CreatePost>
+                <CreatePost closeDrawer={closeDrawer}></CreatePost>
             </div>
         </Drawer>
         <Toolbar>

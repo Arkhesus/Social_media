@@ -26,6 +26,7 @@ const submitPost = async(post, file, setDone) => {
         db.collection("posts").doc(mail).collection("posts").doc().set({
             message: post,
             image : filename,
+            likes: 0,
         }).then((e) => {
             setDone(true)
         }).catch((e)=>{
@@ -36,6 +37,7 @@ const submitPost = async(post, file, setDone) => {
         db.collection("posts").doc(mail).collection("posts").doc().set({
             message: post,
             image : "",
+            likes: 0,
         }).then((e) => {
             setDone(true)
         }).catch((e)=>{
@@ -44,7 +46,7 @@ const submitPost = async(post, file, setDone) => {
     }
 }
 
-const CreatePost = () => {
+const CreatePost = (props) => {
     const [done, setDone] = useState(false)
 
     const classes = useStyles();
@@ -70,7 +72,11 @@ const CreatePost = () => {
                     Upload a photo
                     </Button>
                 </label>
-                <Button color="primary" onClick={() => submitPost(post, file, setDone)}>
+                <Button color="primary" onClick={() => {
+                    props.closeDrawer()
+                    submitPost(post, file, setDone)
+                }
+                }>
                     Submit
                 </Button>
 
