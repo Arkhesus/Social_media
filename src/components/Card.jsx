@@ -1,7 +1,8 @@
-import { PostAdd } from '@material-ui/icons';
+import { Button, IconButton } from '@material-ui/core';
+import { PostAdd, ThumbDown, ThumbUp } from '@material-ui/icons';
 import React from 'react';
 import { Card } from "semantic-ui-react";
-import {auth, db, storage} from "../firebase";
+import {auth, db, getUserMail, storage, fbase} from "../firebase";
 
 export default class CardPost extends React.Component {
 
@@ -22,37 +23,48 @@ export default class CardPost extends React.Component {
 
    componentDidUpdate(){
        if(this.state.mail != this.props.mail_user.mail){
-        this.setState({ "mail" : this.props.mail_user.mail})
-        this.getPost(this.props.mail_user.mail)          
+            this.setState({ "mail" : this.props.mail_user.mail})
+            this.getPost(this.props.mail_user.mail)          
        }
+    //    else {
+    //         this.getPost(this.props.mail_user.mail)
+    //    }
+    }
+
+    getUser(mail){
+        db.collection("users").doc(mail)
+        .get()
+        .then(doc => {
+            if(doc.exists){
+                this.setState({"user" : doc.data().name})
+            }
+        })
     }
 
     getPost(mail){
-        db.collection("users").doc(mail)
-            .get()
-            .then((doc => {
-                if(doc.exists){
-                    this.setState({"user" : doc.data().name})
-                    db.collection("posts").doc(doc.data().name).collection("posts")
-                    .get()
-                    .then(async(querysnapshot) => {
-                        const posts = []
-                        for(const doc of querysnapshot.docs) {
-                            console.log(doc.data())
-                            var imageUrl = await this.getImages(doc.data().image);
-                            var data = {
-                                post: doc.data(),
-                                img: imageUrl
-                            };
-                            console.log(data);
-                            posts.push(data);
-                        }
+        db.collection("posts").doc(mail).collection("posts")
+        .get()
+        .then(async(querysnapshot) => {
+            const posts = []
+            for(const doc of querysnapshot.docs) {
+                var imageUrl = await this.getImages(doc.data().image);
+                var existLike = await db.collection("likes").doc(getUserMail()+"_"+doc.id).get()
 
-                        this.setState({"posts" : posts})
-                    })
-                    .catch(error => console.log(error))  
-                }
-            }))
+                var data = {
+                    post: doc.data(),
+                    img: imageUrl,
+                    id: doc.id,
+                    iLiked: existLike.exists
+                };
+                
+                console.log(data);
+                posts.push(data);
+            }
+
+            this.setState({"posts" : posts})
+        })
+        .catch(error => console.log(error))  
+
     }
 
     async getImages(name){
@@ -61,7 +73,39 @@ export default class CardPost extends React.Component {
         }
     }
 
+    async likePost(id){
+        var mail = getUserMail()
+        var exist = await db.collection("likes").doc(mail+"_"+id).get()
+
+        if (!exist.exists){
+            db.collection("likes").doc(mail+"_"+id).set({
+                "userId":mail,
+                "postId":id
+            })
+            .then(() => {
+                db.collection("posts").doc(this.state.mail).collection("posts").doc(id).update({
+                    "likes":fbase.firestore.FieldValue.increment(1)
+                }).then(()=> {
+                    this.getPost(this.state.mail)
+                })
+            })
+            .catch(err => {
+                console.log(err)
+            })  
+        }
+        else{
+            db.collection("likes").doc(mail+"_"+id).delete().then(()=>{
+                db.collection("posts").doc(this.state.mail).collection("posts").doc(id).update({
+                    "likes":fbase.firestore.FieldValue.increment(-1)
+                }).then(()=> {
+                    this.getPost(this.state.mail)
+                })
+            })
+        }
+    }
+
     render(){
+        console.log("re rendering")
         return (
             <div>
                 {
@@ -71,8 +115,24 @@ export default class CardPost extends React.Component {
                                         <Card.Content>    
                                             <Card.Header className="title">{this.state.user}</Card.Header>
                                             <h2>{post.post.message}</h2>
-                                            <img src={post.img} height="80px"/>
-                                                
+                                            {
+                                                post.img ? (
+                                                        <img src={post.img} height="80px"/>
+                                                    ) : <p></p>
+                                            }
+                                            
+                                            <div>Likes : {post.post.likes ? post.post.likes : 0 }</div>
+                                            {
+                                                post.iLiked ? (
+                                                    <IconButton>
+                                                        <ThumbDown onClick={() => this.likePost(post.id)}/>
+                                                    </IconButton>
+                                                ) : (
+                                                    <IconButton>
+                                                        <ThumbUp onClick={() => this.likePost(post.id)}/>
+                                                    </IconButton>
+                                                )
+                                            }
                                         </Card.Content>
                                     </Card>
                             )

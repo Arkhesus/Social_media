@@ -5,6 +5,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import {db, storage, auth, getUserName, getUserMail} from '../firebase'
+import { MailOutline } from '@material-ui/icons';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -17,12 +18,12 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 const submitPost = async(post, file, setDone) => {
-    var user = await getUserName()
+    var mail = getUserMail()
 
     if (file){
         var filename = file[0].name
         await storage.ref("images/"+filename).put(file[0])
-        db.collection("posts").doc(user).collection("posts").doc().set({
+        db.collection("posts").doc(mail).collection("posts").doc().set({
             message: post,
             image : filename,
         }).then((e) => {
@@ -32,7 +33,7 @@ const submitPost = async(post, file, setDone) => {
         })
     }
     else{
-        db.collection("posts").doc(user).collection("posts").doc().set({
+        db.collection("posts").doc(mail).collection("posts").doc().set({
             message: post,
             image : "",
         }).then((e) => {

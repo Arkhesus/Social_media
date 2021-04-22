@@ -22,7 +22,7 @@ function getMail(){
   return firebase.auth().currentUser.email
 }
 
-
+export const fbase = firebase
 export const auth = firebase.auth();
 export const db = firebase.firestore();
 export const storage = firebase.storage();
