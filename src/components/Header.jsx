@@ -179,7 +179,7 @@ const Header = (props) => {
                   <List className={classes.liste}>
                     {state.names.map((i) => {
                       return (<ListItem>
-                        <Link to={'/'+i}>{i}</Link>
+                        <Link to={'/'+i} onClick={()=> handleClose()}>{i}</Link>
                       </ListItem>)
                     })}
 
