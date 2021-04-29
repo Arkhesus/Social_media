@@ -22,9 +22,37 @@ function getMail(){
   return firebase.auth().currentUser.email
 }
 
+export const getToken = (setTokenFound) => {
+  return firebase.messaging().getToken({vapidKey: 'BE-BOIhqlUHoDqQhJgZ8WeI7NFMuZPWg4XDRFgbX1dEyarTcDnFpCoKg2EDCi9n8SJFATn57tz_ezZCMHGw1kcw'}).then((currentToken) => {
+    console.log("in get token")
+    if (currentToken) {
+      console.log('current token for client: ', currentToken);
+      setTokenFound(true);
+      // Track the token -> client mapping, by sending to backend server
+      // show on the UI that permission is secured
+    } else {
+      console.log('No registration token available. Request permission to generate one.');
+      setTokenFound(false);
+      // shows on the UI that permission is required 
+    }
+  }).catch((err) => {
+    console.log('An error occurred while retrieving token. ', err);
+    // catch error while creating client token
+  });
+}
+
+// export const onMessageListener = () =>
+//   new Promise((resolve) => {
+//     firebase.messaging().onMessage((payload) => {
+//       console.log("RECUUUUUUUUUUUUUUUUUUUUUUUUUUUUU")
+//       resolve(payload);
+//     });
+// });
+
 export const fbase = firebase
 export const auth = firebase.auth();
 export const db = firebase.firestore();
 export const storage = firebase.storage();
 export const getUserName = getUser;
 export const getUserMail = getMail;
+export const messaging = firebase.messaging();
