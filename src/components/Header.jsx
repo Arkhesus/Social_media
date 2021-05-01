@@ -102,7 +102,10 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   drawer:{
-    width: 500
+    width: 500,
+    [theme.breakpoints.down('xs')]: {
+      width: "80vw",
+    },
   }, 
   liste: {
     minWidth:250,

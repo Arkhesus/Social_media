@@ -16,8 +16,7 @@ You will also see any lint errors in the console.
 
 ### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Runs the app in https mode in order to work on mobile. Run your browser with `--ignore-certificate-errors` or `--unsafely-treat-insecure-origin-as-secure=https://localhost:3000`
 
 ### `npm run build`
 
