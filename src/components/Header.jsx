@@ -1,24 +1,17 @@
 import React from 'react';
-
-import {auth,db, getUserMail} from "../firebase";
+import { auth, db } from "../firebase";
 import CreatePost from "./CreatePost";
-import { useState } from "react";
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 import AddIcon from '@material-ui/icons/Add';
 import Popover from '@material-ui/core/Popover';
 import {
@@ -26,20 +19,17 @@ import {
   Link,
 } from "react-router-dom";
 
-const Search = (props) => 
-  {
 
+const Search = (props) => {
     let searchText= props;
     let name = searchText.charAt(0).toUpperCase() + searchText.slice(1).toLowerCase();
-    // console.log("Nom complet", name.length, name)
+    
     return new Promise((resolve, reject) =>{
       db.collection('users').where('name', ">=", name).where('name', '<=', name+ '\uf8ff')
       .get()
       .then(data => {
         const resp = []
         data.forEach(childData => {
-          // sampleArr.push(childData.payload.doc.data())
-          // console.log(childData.id, '=>', childData.data())
           name = childData.data().name
           resp.push(name)
         })
@@ -54,9 +44,17 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {
     marginRight: theme.spacing(2),
+    [theme.breakpoints.down('xs')]: {
+      marginRight: 1,
+      padding: 5
+    },
   },
   title: {
     flexGrow: 1,
+    [theme.breakpoints.down('xs')]: {
+      fontSize: "0.7rem",
+      width: "45%"
+    },
   },
   main:{
     display:"flex",
@@ -71,9 +69,10 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
     marginLeft: 0,
     width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(3),
-      width: 'auto',
+
+    [theme.breakpoints.down('xs')]: {
+      marginLeft: theme.spacing(1),
+      width: '50%',
     },
   },
   searchIcon: {
@@ -84,6 +83,10 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    [theme.breakpoints.down('xs')]: {
+      marginRight: 1,
+      padding: 5
+    },
   },
   inputRoot: {
     color: 'inherit',
@@ -104,6 +107,11 @@ const useStyles = makeStyles((theme) => ({
   liste: {
     minWidth:250,
   },
+  logout:{
+    [theme.breakpoints.down('xs')]: {
+      fontSize: "0.7rem",
+    },
+  }
 }));
 
 const Header = (props) => {
@@ -112,9 +120,7 @@ const Header = (props) => {
       "drawer":false,
       "names": [],
   })
-  // const [names, setNames] = useState({
 
-  // });
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const closeDrawer = () => {
@@ -140,61 +146,58 @@ const Header = (props) => {
   
   var logout = null
   if (props.logout === true){
-        logout = 
-        <div className={classes.main}>
-            <div className={classes.search}>
-                <div className={classes.searchIcon}>
-                    <SearchIcon />
-                </div>
-                
-                <InputBase
-                    placeholder="Search user…"
-                    classes={{
-                    root: classes.inputRoot,
-                    input: classes.inputInput,
-                    }}
-                    
-                    onKeyPress={async(e) => {
-                      
-                      if (e.key === 'Enter'){
-                        Search(e.target.value).then((names) => setState({names:names}))
-                        setAnchorEl(e.currentTarget)
-                      }
-                    }}
-                    inputProps={{ 'aria-label': 'search' }}
-                />
-                <Popover
-                  open={open}
-                  anchorEl={anchorEl}
-                  onClose={handleClose}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                  }}
-                >
-                  <List className={classes.liste}>
-                    {state.names.map((i) => {
-                      return (<ListItem>
-                        <Link to={'/'+i} onClick={()=> handleClose()}>{i}</Link>
-                      </ListItem>)
-                    })}
-
-                  </List>
-
-                </Popover>
-
-                
+    logout = 
+    <div className={classes.main}>
+        <div className={classes.search}>
+            <div className={classes.searchIcon}>
+                <SearchIcon />
             </div>
-                <Button color="inherit" onClick={() => {
-                    auth.signOut().then(()=>{
-                      props.setLogged(false)  
-                    })
-                  }}>Logout</Button>
+            
+            <InputBase
+                placeholder="Search user…"
+                classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput,
+                }}
+                
+                onKeyPress={async(e) => {
+                  
+                  if (e.key === 'Enter'){
+                    Search(e.target.value).then((names) => setState({names:names}))
+                    setAnchorEl(e.currentTarget)
+                  }
+                }}
+                inputProps={{ 'aria-label': 'search' }}
+            />
+            <Popover
+              open={open}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+            >
+              <List className={classes.liste}>
+                {state.names.map((i) => {
+                  return (<ListItem>
+                    <Link to={'/'+i} onClick={()=> handleClose()}>{i}</Link>
+                  </ListItem>)
+                })}
+
+              </List>
+            </Popover>
         </div>
+        <Button className={classes.logout} color="inherit" onClick={() => {
+            auth.signOut().then(()=>{
+              props.setLogged(false)  
+            })
+          }}>Logout</Button>
+    </div>
   }
 
   return (
@@ -212,10 +215,7 @@ const Header = (props) => {
             <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
               <AddIcon onClick={() => setState({...state, ["drawer"]: true})}/>
             </IconButton>
-            ) :
-            (
-              <p></p>
-            )
+            ) : (<p></p>)
           }
           <Typography variant="h6" className={classes.title} onClick={routeChange}>
             Social Media
@@ -225,8 +225,6 @@ const Header = (props) => {
           
         </Toolbar>
       </AppBar>
-
-      <div id="test"></div>
     </div>
   );
 }

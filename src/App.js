@@ -1,10 +1,8 @@
-import './App.css';
 import AuthForm from './components/AuthForm';
-import Test from './page/Test';
 import User from './page/User';
 import Header from "./components/Header";
 import {useState} from "react";
-import {auth, db, getToken, messaging, getUserMail} from "./firebase";
+import {auth, getToken, messaging, getUserMail} from "./firebase";
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -12,13 +10,12 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import CssBaseline from "@material-ui/core/CssBaseline";
-import MenuApp from "./page/MenuApp"
+import Home from "./page/Home"
 
 import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
 } from "react-router-dom";
  
 const theme = createMuiTheme({
@@ -78,14 +75,11 @@ function App() {
             <Router>
               <Header logout={logged} setLogged={setLogged}/>
               <Switch>
-                <Route path="/test/:msg">
-                  <Test logged={logged} setLogged={setLogged}/>
-                </Route>
                 <Route path="/:name">
                   <User />
                 </Route>
                 <Route path="/">
-                  <MenuApp mail={getUserMail()}/>
+                  <Home mail={getUserMail()}/>
                 </Route>
               </Switch>
             </Router>

@@ -1,12 +1,12 @@
-import { Button, IconButton } from '@material-ui/core';
-import { PostAdd, ThumbDown, ThumbUp } from '@material-ui/icons';
+import { IconButton } from '@material-ui/core';
+import { ThumbDown, ThumbUp } from '@material-ui/icons';
 import React from 'react';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
-import {auth, db, getUserMail, storage, fbase} from "../firebase";
+import { db, getUserMail, storage, fbase} from "../firebase";
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -14,11 +14,17 @@ import { withStyles } from '@material-ui/core/styles';
 const useStyles = theme => ({
     card: {
         margin:"10px"
+    },
+    media:{
+        height: 200
+    },
+    likes:{
+        marginLeft: "auto",
+        marginRight: 10
     }
   })
 
-class CardPost extends React.Component {
-
+class CardPosts extends React.Component {
     state = {
         posts : [],
         user: null,
@@ -39,9 +45,6 @@ class CardPost extends React.Component {
             this.setState({ "mail" : this.props.mail_user.mail})
             this.getPost(this.props.mail_user.mail)          
        }
-    //    else {
-    //         this.getPost(this.props.mail_user.mail)
-    //    }
     }
 
     getUser(mail){
@@ -131,22 +134,20 @@ class CardPost extends React.Component {
                                     <CardActionArea>
                                         {
                                             post.img ? 
-                                            (<img src={post.img} height="150px"/>) 
+                                            (<CardMedia
+                                                image={post.img}
+                                                className={classes.media}
+                                            />) 
                                             :
                                             <p></p>
                                         }
-                                        
                                         <CardContent>
-                                        <Typography gutterBottom variant="h5" component="h2">
-                                            {this.state.user}
-                                        </Typography>
-                                        <Typography variant="body2" color="textSecondary" component="p">
-                                            {post.post.message}
-                                        </Typography>
+                                            <Typography variant="body1" color="textSecondary">
+                                                {post.post.message}
+                                            </Typography>
                                         </CardContent>
                                     </CardActionArea>
-                                    <CardActions>
-                                        Likes : {post.post.likes ? post.post.likes : 0 }
+                                    <CardActions spacing={10} disableSpacing>
                                         {
                                             post.iLiked ? (
                                                 <IconButton>
@@ -158,6 +159,9 @@ class CardPost extends React.Component {
                                                 </IconButton>
                                             )
                                         }
+                                        <Typography className={classes.likes} variant="overline" display="block" align="right">
+                                            Likes : {post.post.likes ? post.post.likes : 0 }
+                                        </Typography>
                                     </CardActions>
                                 </Card>
                             </div>
@@ -170,4 +174,4 @@ class CardPost extends React.Component {
     }
 }
 
-export default withStyles(useStyles)(CardPost)
+export default withStyles(useStyles)(CardPosts)

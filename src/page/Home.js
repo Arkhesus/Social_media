@@ -1,5 +1,5 @@
 import React from 'react'
-import CardPost from "../components/Card"
+import CardPosts from "../components/CardPosts"
 import Header from "../components/Header"
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -18,15 +18,15 @@ const useStyles = makeStyles((theme)=>({
     }
   }))
 
-function MenuApp(props) {
+function Home(props) {
 
     const classes = useStyles();
 
     return (
         <div className={classes.cards}>
-            <CardPost mail_user={{"mail" : props.mail}}/>
+            <CardPosts mail_user={{"mail" : props.mail}}/>
         </div>
     )
 }
 
-export default MenuApp
+export default Home

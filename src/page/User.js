@@ -1,10 +1,6 @@
 import React from 'react';
-import {
-    useParams
-  } from "react-router-dom";
-import {auth, db, getUserMail} from "../firebase";
-import { useState } from "react";
-import CardPost from "../components/Card";
+import { db, getUserMail} from "../firebase";
+import CardPosts from "../components/CardPosts";
 import { withRouter } from "react-router";
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -17,10 +13,6 @@ const useStyles = theme => ({
         margin: theme.spacing(1),
       },
       
-    },
-    top: {
-        // background: "red",
-        // display: "flex"
     },
     cards: {
         maxWidth: 500,
@@ -91,7 +83,7 @@ class User extends React.Component {
         const { classes } = this.props;
         return(
             <div className={classes.root}>
-                <div className={classes.top}>
+                <div>
                     <h1>Bienvenue sur le fil d'actualité de  {this.state.user}</h1> 
 
                     {this.state.followed==true ? 
@@ -103,14 +95,10 @@ class User extends React.Component {
                                     }
                                 }>Ne plus suivre
                         </Button>
-                    )
-                    :
-                    (
+                    ):(
                         this.state.followed == null ? (
                             <p>Loading...</p>
-                        )
-                        :
-                        (
+                        ):(
                             <Button variant="contained" color="primary" 
                                 onClick={() => {
                                         this.setFollow()
@@ -124,14 +112,11 @@ class User extends React.Component {
                 {this.state.mail ? 
                 (
                     <div className={classes.cards}>
-                        <CardPost mail_user={{"mail" : this.state.mail}}/>
+                        <CardPosts mail_user={{"mail" : this.state.mail}}/>
                     </div>
-                )
-                :
-                (
+                ):(
                     <p></p>
                 )}
-                
             </div>
         )     
    }

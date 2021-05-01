@@ -1,9 +1,7 @@
 import { useState, Fragment } from "react";
-// import { Card, Menu, Form, Button } from "semantic-ui-react";
 import { db, auth } from "../firebase";
 import { makeStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -74,8 +72,6 @@ async function createUser(email, password, username) {
     })
     
 }
-
-
 
 function AuthForm(props) {
     const classes = useStyles();
