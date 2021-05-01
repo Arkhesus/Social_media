@@ -4,8 +4,22 @@ import './css/Authform.css';
 import { db, auth } from "../firebase";
 import MenuApp from "../page/MenuApp";
 import Header from './Header';
+import { makeStyles } from '@material-ui/core/styles'
 //importer CSS peut encore se faire ici :) 
 
+const useStyles = makeStyles((theme)=>({
+    root: {
+      '& > *': {
+        margin: theme.spacing(1),
+      },
+      
+    },
+    cards: {
+        maxWidth: 500,
+        padding: 20,
+        margin: "auto",
+    }
+  }))
 
 async function authenticateUser(email, password) {
     try {
@@ -44,9 +58,9 @@ async function createUser(email, password, username) {
 
 
 
-
 function AuthForm(props) {
 
+    const classes = useStyles();
     //declaration de variable et constante
     const [isLogin, setIsLogin] = useState(true);
 

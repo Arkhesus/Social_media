@@ -6,11 +6,17 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import {db, storage, auth, getUserName, getUserMail} from '../firebase'
 import { MailOutline } from '@material-ui/icons';
-
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import Grid from '@material-ui/core/Grid';
 
 const useStyles = makeStyles((theme) => ({
+    root: {
+        width:"95%",
+        margin:"auto"
+      },
     form:{
-        display: "block",
+
     },
     input: {
         display: 'none',
@@ -53,12 +59,14 @@ const CreatePost = (props) => {
     var file
     var post 
     return (
-        <div>
+        <div className={classes.root}>
             <h2>Create a new post</h2>
-            <div className={classes.form}>
-                <TextField id="standard-basic" label="Post" multiline onChange={(e) => {
-                    post = e.target.value
-                }}/>
+            <Grid container spacing={3}>
+                <Grid item xs={12}>
+                    <TextField className={classes.formItem} id="standard-basic" label="Post" multiline fullWidth onChange={(e) => {
+                        post = e.target.value
+                    }}/>
+                </Grid>
                 <input
                     accept="image/*"
                     className={classes.input}
@@ -67,20 +75,23 @@ const CreatePost = (props) => {
                     type="file"
                     onChange={(e) => file = e.target.files}
                 />
-                <label htmlFor="contained-button-file">
-                    <Button variant="contained" color="primary" component="span">
-                    Upload a photo
+                <Grid item>
+                    <label htmlFor="contained-button-file">
+                        <Button variant="contained" color="primary" component="span">
+                        Upload a photo
+                        </Button>
+                    </label>
+                </Grid>
+                <Grid item>
+                    <Button color="primary" onClick={() => {
+                        props.closeDrawer()
+                        submitPost(post, file, setDone)
+                    }
+                    }>
+                        Submit
                     </Button>
-                </label>
-                <Button color="primary" onClick={() => {
-                    props.closeDrawer()
-                    submitPost(post, file, setDone)
-                }
-                }>
-                    Submit
-                </Button>
-
-            </div>
+                </Grid>
+            </Grid>
             {
                 done ? <p>New post posted</p> : <div></div>
             }

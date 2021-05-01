@@ -206,9 +206,17 @@ const Header = (props) => {
             </div>
         </Drawer>
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            <AddIcon onClick={() => setState({...state, ["drawer"]: true})}/>
-          </IconButton>
+          {
+            props.logout ? 
+            (
+            <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+              <AddIcon onClick={() => setState({...state, ["drawer"]: true})}/>
+            </IconButton>
+            ) :
+            (
+              <p></p>
+            )
+          }
           <Typography variant="h6" className={classes.title} onClick={routeChange}>
             Social Media
           </Typography>

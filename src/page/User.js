@@ -6,17 +6,28 @@ import {auth, db, getUserMail} from "../firebase";
 import { useState } from "react";
 import CardPost from "../components/Card";
 import { withRouter } from "react-router";
-import { makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import Divider from '@material-ui/core/Divider';
 
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = theme => ({
     root: {
       '& > *': {
         margin: theme.spacing(1),
       },
+      
     },
-  }));
+    top: {
+        // background: "red",
+        // display: "flex"
+    },
+    cards: {
+        maxWidth: 500,
+        padding: 20,
+        margin: "auto"
+    }
+  })
 
 class User extends React.Component {
 
@@ -77,50 +88,53 @@ class User extends React.Component {
     }
 
    render(){
-    return(
-        <div>
-        <h1>Bienvenue sur le fil d'actualité de  {this.state.user}</h1> 
+        const { classes } = this.props;
+        return(
+            <div className={classes.root}>
+                <div className={classes.top}>
+                    <h1>Bienvenue sur le fil d'actualité de  {this.state.user}</h1> 
 
-        {this.state.followed==true ? 
-        (
-            <Button variant="contained" color="primary" 
-                onClick={() => {
-                            console.log("clicked")
-                            this.setUnFollow()
-                        }
-                    }>Ne plus suivre
-            </Button>
-        )
-        :
-        (
-            this.state.followed == null ? (
-                <p>Loading...</p>
-            )
-            :
-            (
-                <Button variant="contained" color="primary" 
-                onClick={() => {
-                            this.setFollow()
-                        }
-                    }>Suivre
-            </Button>
-            )
-        )}
-
-        {this.state.mail ? 
-        (
-            <div>
-                <CardPost mail_user={{"mail" : this.state.mail}}/>
+                    {this.state.followed==true ? 
+                    (
+                        <Button variant="contained" color="primary" 
+                            onClick={() => {
+                                        console.log("clicked")
+                                        this.setUnFollow()
+                                    }
+                                }>Ne plus suivre
+                        </Button>
+                    )
+                    :
+                    (
+                        this.state.followed == null ? (
+                            <p>Loading...</p>
+                        )
+                        :
+                        (
+                            <Button variant="contained" color="primary" 
+                                onClick={() => {
+                                        this.setFollow()
+                                    }
+                                }>Suivre
+                            </Button>
+                        )
+                    )}
+                </div>
+                <Divider variant="middle" />
+                {this.state.mail ? 
+                (
+                    <div className={classes.cards}>
+                        <CardPost mail_user={{"mail" : this.state.mail}}/>
+                    </div>
+                )
+                :
+                (
+                    <p></p>
+                )}
+                
             </div>
-        )
-        :
-        (
-            <p></p>
-        )}
-        
-    </div>
-    )     
+        )     
    }
 }
 
-export default withRouter(User);
+export default withRouter(withStyles(useStyles)(User));

@@ -41,13 +41,6 @@ export const getToken = (setTokenFound) => {
   });
 }
 
-// export const onMessageListener = () =>
-//   new Promise((resolve) => {
-//     firebase.messaging().onMessage((payload) => {
-//       console.log("RECUUUUUUUUUUUUUUUUUUUUUUUUUUUUU")
-//       resolve(payload);
-//     });
-// });
 
 export const fbase = firebase
 export const auth = firebase.auth();

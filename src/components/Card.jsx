@@ -1,10 +1,23 @@
 import { Button, IconButton } from '@material-ui/core';
 import { PostAdd, ThumbDown, ThumbUp } from '@material-ui/icons';
 import React from 'react';
-import { Card } from "semantic-ui-react";
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
 import {auth, db, getUserMail, storage, fbase} from "../firebase";
+import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles';
 
-export default class CardPost extends React.Component {
+
+const useStyles = theme => ({
+    card: {
+        margin:"20px"
+    }
+  })
+
+class CardPost extends React.Component {
 
     state = {
         posts : [],
@@ -106,42 +119,55 @@ export default class CardPost extends React.Component {
 
     render(){
         console.log("re rendering")
+        const { classes } = this.props;
         return (
             <div>
                 {
-                    this.state.posts && this.state.posts.map(post => {
-                        if(post.post.message != null){
-                            return( <Card className="teams_card">
-                                        <Card.Content>    
-                                            <Card.Header className="title">{this.state.user}</Card.Header>
-                                            <h2>{post.post.message}</h2>
-                                            {
-                                                post.img ? (
-                                                        <img src={post.img} height="80px"/>
-                                                    ) : <p></p>
-                                            }
-                                            
-                                            <div>Likes : {post.post.likes ? post.post.likes : 0 }</div>
-                                            {
-                                                post.iLiked ? (
-                                                    <IconButton>
-                                                        <ThumbDown onClick={() => this.likePost(post.id)}/>
-                                                    </IconButton>
-                                                ) : (
-                                                    <IconButton>
-                                                        <ThumbUp onClick={() => this.likePost(post.id)}/>
-                                                    </IconButton>
-                                                )
-                                            }
-                                        </Card.Content>
-                                    </Card>
-                            )
-                        }
-                    })
+                this.state.posts && this.state.posts.map(post => {
+                    if(post.post.message != null){
+                        return ( 
+                            <div className={classes.card}>
+                                <Card>
+                                    <CardActionArea>
+                                        {
+                                            post.img ? 
+                                            (<img src={post.img} height="150px"/>) 
+                                            :
+                                            <p></p>
+                                        }
+                                        
+                                        <CardContent>
+                                        <Typography gutterBottom variant="h5" component="h2">
+                                            {this.state.user}
+                                        </Typography>
+                                        <Typography variant="body2" color="textSecondary" component="p">
+                                            {post.post.message}
+                                        </Typography>
+                                        </CardContent>
+                                    </CardActionArea>
+                                    <CardActions>
+                                        Likes : {post.post.likes ? post.post.likes : 0 }
+                                        {
+                                            post.iLiked ? (
+                                                <IconButton>
+                                                    <ThumbDown onClick={() => this.likePost(post.id)}/>
+                                                </IconButton>
+                                            ) : (
+                                                <IconButton>
+                                                    <ThumbUp onClick={() => this.likePost(post.id)}/>
+                                                </IconButton>
+                                            )
+                                        }
+                                    </CardActions>
+                                </Card>
+                            </div>
+                        )
+                    }
+                })
                 }
             </div>
         );
+    }
 }
 
-
-}
+export default withStyles(useStyles)(CardPost)

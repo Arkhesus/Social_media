@@ -1,19 +1,30 @@
 import React from 'react'
 import CardPost from "../components/Card"
 import Header from "../components/Header"
+import { makeStyles } from '@material-ui/core/styles';
 
+
+const useStyles = makeStyles((theme)=>({
+    root: {
+      '& > *': {
+        margin: theme.spacing(1),
+      },
+      
+    },
+    cards: {
+        maxWidth: 500,
+        padding: 20,
+        margin: "auto",
+    }
+  }))
 
 function MenuApp(mail="") {
 
-    
+    const classes = useStyles();
 
     return (
-        <div>
-            {/* <Header logout={true}/> */}
-                {/* <h1>Logged in !!! :) :) :)</h1> */}
-                {/* <AiIcons.AiOutlinePoweroff onClick={ () => auth.signOut()}/> */}
-
-                <CardPost mail_user={mail}/>
+        <div className={classes.cards}>
+            <CardPost mail_user={mail}/>
         </div>
     )
 }
