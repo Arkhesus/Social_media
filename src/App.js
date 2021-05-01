@@ -4,7 +4,7 @@ import Test from './page/Test';
 import User from './page/User';
 import Header from "./components/Header";
 import {useState} from "react";
-import {auth, db, getToken, messaging} from "./firebase";
+import {auth, db, getToken, messaging, getUserMail} from "./firebase";
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -12,6 +12,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import CssBaseline from "@material-ui/core/CssBaseline";
+import MenuApp from "./page/MenuApp"
 
 import {
   BrowserRouter as Router,
@@ -41,9 +42,6 @@ function App() {
   getToken(setTokenFound);
 
   messaging.onMessage(payload=>{
-    console.log(payload)
-    console.log(payload.notification)
-    console.log(payload.notification.title)
     setNotif({
       title:payload.notification.title ,
       body:payload.notification.body 
@@ -87,7 +85,7 @@ function App() {
                   <User />
                 </Route>
                 <Route path="/">
-                  <AuthForm logged={logged} setLogged={setLogged}/>
+                  <MenuApp mail={getUserMail()}/>
                 </Route>
               </Switch>
             </Router>

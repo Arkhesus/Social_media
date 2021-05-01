@@ -13,7 +13,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 const useStyles = theme => ({
     card: {
-        margin:"20px"
+        margin:"10px"
     }
   })
 

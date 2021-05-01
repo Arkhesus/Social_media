@@ -18,13 +18,13 @@ const useStyles = makeStyles((theme)=>({
     }
   }))
 
-function MenuApp(mail="") {
+function MenuApp(props) {
 
     const classes = useStyles();
 
     return (
         <div className={classes.cards}>
-            <CardPost mail_user={mail}/>
+            <CardPost mail_user={{"mail" : props.mail}}/>
         </div>
     )
 }
