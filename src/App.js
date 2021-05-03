@@ -2,7 +2,7 @@ import AuthForm from './components/AuthForm';
 import User from './page/User';
 import Header from "./components/Header";
 import {useState} from "react";
-import {auth, getToken, messaging, getUserMail} from "./firebase";
+import {auth, getToken, messaging, getUserMail, getUserName, db} from "./firebase";
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -30,6 +30,11 @@ function App() {
   const [logged, setLogged] = useState(false)
   const [isTokenFound, setTokenFound] = useState(false);
   const [open, setOpen] = useState(false);
+  const [newNotif, setNewNotif] = useState({
+    open: null,
+    content: []
+  });
+  var user
 
   const [notif, setNotif] = useState({
     title:null,
@@ -55,9 +60,24 @@ function App() {
     }
   });
 
+  const checkNotifs = () =>{
+
+    db.collection("follows").where("follower", "==", getUserMail()).get().then((resp)=>{
+      console.log(resp.docs)
+      setNewNotif({open:true, content:resp.docs})
+    })
+  }
+
   const handleClose = () => {
     setOpen(false);
   };
+
+  const handleNewNotifClose = () => {
+    setNewNotif({open:false});
+  };
+
+  if (logged && newNotif.open === null) checkNotifs()
+
   
   return (
     <ThemeProvider theme={theme}>
@@ -72,6 +92,20 @@ function App() {
                 <DialogContentText>{notif.body}</DialogContentText>
               </DialogContent>
             </Dialog>
+
+          {newNotif.open ? (
+            <Dialog onClose={handleNewNotifClose} aria-labelledby="simple-dialog-title" open={newNotif.open}>
+              <DialogTitle id="simple-dialog-title">Hello, you have {newNotif.content.length} new notification(s) from :</DialogTitle>
+              {newNotif.content.map((notif)=>{
+                return (<DialogContent>
+                          <DialogContentText>{notif.data().followed}</DialogContentText>
+                        </DialogContent>)
+              })
+              
+              }
+              
+            </Dialog>) : (<div/>)}
+
             <Router>
               <Header logout={logged} setLogged={setLogged}/>
               <Switch>

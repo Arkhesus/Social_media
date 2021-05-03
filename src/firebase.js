@@ -12,14 +12,14 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
+function getMail(){
+  return firebase.auth().currentUser.email
+}
+
 async function getUser(){
   var email = getMail()
   var doc = await firebase.firestore().collection("users").doc(email).get()
   return doc.data().name
-}
-
-function getMail(){
-  return firebase.auth().currentUser.email
 }
 
 export const getToken = (setTokenFound) => {
