@@ -164,7 +164,8 @@ function AuthForm(props) {
                                             color="primary"
                                             onClick={() => {
                                                 authenticateUser(loginEmail, loginPassword).then(()=>{
-                                                    props.setLogged(true)  
+                                                    props.setLogged(true)
+                                                    props.checkNotifs()
                                                 }).catch(err=>{
                                                     setError(true)
                                                 })

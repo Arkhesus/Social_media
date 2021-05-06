@@ -45,6 +45,14 @@ const submitPost = async(post, file, setDone) => {
             console.log(e)
         })
     }
+
+    db.collection("follows").where("followed", "==", mail).get().then(resp=>{
+        resp.docs.forEach(doc=>{
+            db.collection("follows").doc(doc.id).update({
+                new:true
+            })
+        })
+    })
 }
 
 const CreatePost = (props) => {

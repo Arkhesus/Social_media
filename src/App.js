@@ -60,11 +60,23 @@ function App() {
     }
   });
 
-  const checkNotifs = () =>{
+  const checkNotifs = () => {
+    db.collection("follows").where("follower", "==", getUserMail()).where("new", "==", true).get().then(async (resp)=>{
+      const liste = []
 
-    db.collection("follows").where("follower", "==", getUserMail()).get().then((resp)=>{
-      console.log(resp.docs)
-      setNewNotif({open:true, content:resp.docs})
+      for(var doc of resp.docs){
+        console.log(doc)
+        var user = await db.collection("users").doc(doc.data().followed).get()
+        if (user.data()){
+          liste.push(user.data().name)
+
+          db.collection("follows").doc(doc.id).update({
+            new: false
+          })
+        }
+      }
+
+      setNewNotif({open:liste.length > 0, content:liste})
     })
   }
 
@@ -98,7 +110,7 @@ function App() {
               <DialogTitle id="simple-dialog-title">Hello, you have {newNotif.content.length} new notification(s) from :</DialogTitle>
               {newNotif.content.map((notif)=>{
                 return (<DialogContent>
-                          <DialogContentText>{notif.data().followed}</DialogContentText>
+                          <DialogContentText>{notif}</DialogContentText>
                         </DialogContent>)
               })
               
@@ -121,7 +133,7 @@ function App() {
         ) : (
           <div>
             <Header logout={logged} setLogged={setLogged}/>
-            <AuthForm logged={logged} setLogged={setLogged}/>
+            <AuthForm logged={logged} setLogged={setLogged} checkNotifs={checkNotifs}/>
           </div>
         )
       }
